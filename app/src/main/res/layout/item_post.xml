@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/rl_item_post"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_180sdp">
+        <ImageView
+            android:id="@+id/img_post"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <LinearLayout
+            android:background="@color/colorBlackTran"
+            android:padding="@dimen/_8sdp"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_post_title"
+                android:textStyle="bold"
+                android:ellipsize="end"
+                android:lines="2"
+                android:textSize="@dimen/_13sdp"
+                android:textColor="@color/colorWhite"
+                android:text="Những lúc bỗng thấy em đang lặng im trong đêm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/tv_post_desc"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:ellipsize="end"
+                android:lines="3"
+                android:textSize="@dimen/_11sdp"
+                android:textColor="@color/colorWhite"
+                android:text="Nước mắt mãi roi không sao nói hết nên lới. Anh chợt nhận ra không ai yêu em hơn anh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/rl_item_menu"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp">
+        <TextView
+            android:id="@+id/tv_title_menu"
+            android:textStyle="bold"
+            android:textSize="@dimen/_15sdp"
+            android:layout_marginLeft="@dimen/_15sdp"
+            android:gravity="center"
+            android:text="Demo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <View
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="2px" />
+    </RelativeLayout>
+
+</LinearLayout>

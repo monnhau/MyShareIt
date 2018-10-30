@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp">
+
+            <TextView
+                android:textSize="@dimen/_13sdp"
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="Tiêu đề"
+                android:textColor="@color/colorWhite" />
+            <ImageView
+                android:id="@+id/img_menu"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/baseline_menu_white_24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <ToggleButton
+                android:id="@+id/toggo_btn_sound"
+                android:textSize="@dimen/_10sdp"
+                android:background="@color/colorPink"
+                android:layout_marginRight="@dimen/_3sdp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textOn="Sound On"
+                android:textOff="Sound off"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_26sdp" />
+
+        </RelativeLayout>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_of_posts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

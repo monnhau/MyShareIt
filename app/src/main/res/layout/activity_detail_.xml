@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Detail_Activity">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_50sdp">
+
+            <TextView
+                android:ellipsize="end"
+                android:lines="1"
+                android:layout_marginLeft="@dimen/_80sdp"
+                android:layout_marginRight="@dimen/_80sdp"
+                android:textSize="@dimen/_11sdp"
+                android:id="@+id/tv_detail_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="Tiêu đề"
+                android:gravity="center"
+                android:textColor="@color/colorWhite" />
+
+            <ImageView
+                android:id="@+id/img_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/_8sdp"
+                android:src="@drawable/baseline_arrow_back_white_24" />
+            <ToggleButton
+                android:id="@+id/toggo_btn_sound1"
+                android:textSize="@dimen/_10sdp"
+                android:background="@color/colorPink"
+                android:layout_marginRight="@dimen/_3sdp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textOn="Sound On"
+                android:textOff="Sound off"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_26sdp" />
+
+        </RelativeLayout>
+
+        <WebView
+            android:id="@+id/wv_post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></WebView>
+
+    </LinearLayout>
+
+</RelativeLayout>
