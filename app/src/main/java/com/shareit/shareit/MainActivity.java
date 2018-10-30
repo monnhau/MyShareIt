@@ -43,9 +43,12 @@ public class MainActivity extends AppCompatActivity {
     SlidingMenu menuItcNews;
     SlidingMenu menuDanTri;
     MenuAdapter menuAdapter;
+    MenuAdapter menuAdapterItcNews;
+    MenuAdapter menuAdapterDanTri;
     RecyclerView rvMenu;
     RecyclerView rvMenuITC;
-    List<MenuEntity> menuEntities = new ArrayList<>();
+    RecyclerView rvDanTri;
+    List<MenuEntity> menuEntitiesItcNews = new ArrayList<>();
     static int catId = 0;
     RecyclerView rvOfPosts;
     PostAdapter postAdapter;
@@ -122,6 +125,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        rlDanTri = (RelativeLayout) menu.findViewById(R.id.rl_dan_tri);
+
+        rlDanTri.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menuDanTri.toggle();
+            }
+        });
+
+        menuDanTri = new SlidingMenu(this);
+        menuDanTri.setMode(SlidingMenu.RIGHT);
+        menuDanTri.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+        menuDanTri.setShadowWidthRes(R.dimen._8sdp);
+        menuDanTri.setShadowDrawable(R.drawable.shadow);
+        menuDanTri.setBehindOffsetRes(R.dimen._60sdp);
+        menuDanTri.setFadeDegree(0.35f);
+        menuDanTri.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        menuDanTri.setMenu(R.layout.layout_menu_dan_tri);
+
 
         imgMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,33 +169,33 @@ public class MainActivity extends AppCompatActivity {
         MenuEntity otoxemay = new MenuEntity(14, "Ô tô-Xe máy", false);
         MenuEntity videohot = new MenuEntity(15, "Video hot", false);
 
-        menuEntities.add(thoisu);
-        menuEntities.add(internet);
-        menuEntities.add(phanmem);
-        menuEntities.add(kinhdoanh);
-        menuEntities.add(thitruong);
-        menuEntities.add(game);
-        menuEntities.add(congnghe360);
-        menuEntities.add(cntt);
-        menuEntities.add(phancung);
-        menuEntities.add(thegioiso);
-        menuEntities.add(didong);
-        menuEntities.add(khoinghiep);
-        menuEntities.add(gocdoanhnghiep);
-        menuEntities.add(otoxemay);
-        menuEntities.add(videohot);
+        menuEntitiesItcNews.add(thoisu);
+        menuEntitiesItcNews.add(internet);
+        menuEntitiesItcNews.add(phanmem);
+        menuEntitiesItcNews.add(kinhdoanh);
+        menuEntitiesItcNews.add(thitruong);
+        menuEntitiesItcNews.add(game);
+        menuEntitiesItcNews.add(congnghe360);
+        menuEntitiesItcNews.add(cntt);
+        menuEntitiesItcNews.add(phancung);
+        menuEntitiesItcNews.add(thegioiso);
+        menuEntitiesItcNews.add(didong);
+        menuEntitiesItcNews.add(khoinghiep);
+        menuEntitiesItcNews.add(gocdoanhnghiep);
+        menuEntitiesItcNews.add(otoxemay);
+        menuEntitiesItcNews.add(videohot);
 
-        menuAdapter = new MenuAdapter(menuEntities, new AdapterListenner() {
+        menuAdapterItcNews = new MenuAdapter(menuEntitiesItcNews, new AdapterListenner() {
             @Override
             public void onItemClickListenner(Object o, int pos, RecyclerView.ViewHolder holder) {
                 MenuEntity menuEntity =(MenuEntity) o;
 
                 //reaet Selected ve false
-                for(int i=0; i<menuEntities.size(); ++i){
-                    menuEntities.get(i).setSelected(false);
+                for(int i=0; i<menuEntitiesItcNews.size(); ++i){
+                    menuEntitiesItcNews.get(i).setSelected(false);
                 }
-                menuEntities.get(pos).setSelected(true);
-                menuAdapter.notifyDataSetChanged();
+                menuEntitiesItcNews.get(pos).setSelected(true);
+                menuAdapterItcNews.notifyDataSetChanged();
 
                 MainActivity.catId = menuEntity.getId();
                 postEntities.clear();
@@ -185,16 +207,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        menuAdapterDanTri = new MenuAdapter(menuEntitiesItcNews, new AdapterListenner() {
+            @Override
+            public void onItemClickListenner(Object o, int pos, RecyclerView.ViewHolder holder) {
+                MenuEntity menuEntity =(MenuEntity) o;
+
+                //reaet Selected ve false
+                for(int i=0; i<menuEntitiesItcNews.size(); ++i){
+                    menuEntitiesItcNews.get(i).setSelected(false);
+                }
+                menuEntitiesItcNews.get(pos).setSelected(true);
+                menuAdapterItcNews.notifyDataSetChanged();
+
+                MainActivity.catId = menuEntity.getId();
+                postEntities.clear();
+                postAdapter.notifyDataSetChanged();
+                getListPost();
+                tvTitle.setText(menuEntity.getName());
+                menu.toggle();
+                menuDanTri.toggle();
+            }
+        });
+
 
         rvMenu =(RecyclerView) menu.findViewById(R.id.rv_Menu);
         rvMenu.setLayoutManager(new LinearLayoutManager(this));
         rvMenu.setItemAnimator(new DefaultItemAnimator());
-        rvMenu.setAdapter(menuAdapter);
+        //rvMenu.setAdapter(menuAdapterItcNews);
 
         rvMenuITC  = (RecyclerView) menuItcNews.findViewById(R.id.rv_Menu_ITC);
         rvMenuITC.setLayoutManager(new LinearLayoutManager(this));
         rvMenuITC.setItemAnimator(new DefaultItemAnimator());
-        rvMenuITC.setAdapter(menuAdapter);
+        rvMenuITC.setAdapter(menuAdapterItcNews);
+
+        rvDanTri  = (RecyclerView) menuDanTri.findViewById(R.id.rv_Dan_Tri);
+        rvDanTri.setLayoutManager(new LinearLayoutManager(this));
+        rvDanTri.setItemAnimator(new DefaultItemAnimator());
+        rvDanTri.setAdapter(menuAdapterDanTri);
 
         postAdapter = new PostAdapter(postEntities, new AdapterListenner() {
             @Override
