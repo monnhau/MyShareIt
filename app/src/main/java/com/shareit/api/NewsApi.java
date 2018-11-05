@@ -149,7 +149,7 @@ public class NewsApi {
     }
 
 
-    public static void API_GET_POST_DETAIL_SHAREIT(Context ctx, String link, HttpCallback httpCallback ){
+    public static void API_GET_POST_DETAIL_SHAREIT(Context ctx, int idPost, HttpCallback httpCallback ){
         //Tao 1 call back dua vao doi tuong baseOkhttp
         BaseOkHttp baseOkHttp = new BaseOkHttp.Builder()
                 .setHttpCallback(httpCallback)
@@ -161,7 +161,7 @@ public class NewsApi {
                 .build();
         //Tao nhan vat chinh OkHttpClient
         OkHttpClient okHttpClient = BaseOkHttp.getOkHttpClient();
-        String url = Define.API_GET_POST_DETAIL+"?link="+link;
+        String url = Define.API_GET_LIST_POST_SHAREIT+"/detail/"+idPost;
         Request request = new Request.Builder()
                 .url(url)
                 .build();

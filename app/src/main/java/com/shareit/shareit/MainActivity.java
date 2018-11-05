@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     MenuAdapterShareIt menuAdapterShareIt;
     MenuAdapter menuAdapterItcNews;
     MenuAdapter menuAdapterDanTri;
-
     RecyclerView rvMenu, rvMenuITC, rvDanTri, rvMenuChildCommon;
     List<MenuEntityShareIt>  menuEntities = new ArrayList<>();
     List<MenuEntityShareIt>  menuEntitiesShareItChildAll = new ArrayList<>();
@@ -100,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         postEntities.clear();
-                        postAdapter.notifyDataSetChanged();
+                        //postAdapter.notifyDataSetChanged();
                         if(isShareItPostType == true) getListPostShareIt();
                         else getListPost();
                     }
@@ -284,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
                 MainActivity.catId = menuEntity.getId();
                 postEntities.clear();
-                postAdapter.notifyDataSetChanged();
+                //postAdapter.notifyDataSetChanged();
                 getListPost();
                 tvTitle.setText(menuEntity.getName());
                 menu.toggle();
@@ -306,7 +305,7 @@ public class MainActivity extends AppCompatActivity {
 
                 MainActivity.catId = menuEntity.getId();
                 postEntities.clear();
-                postAdapter.notifyDataSetChanged();
+                //postAdapter.notifyDataSetChanged();
                 getListPost();
                 tvTitle.setText(menuEntity.getName());
                 menu.toggle();
@@ -340,9 +339,9 @@ public class MainActivity extends AppCompatActivity {
                 MenuAdapterShareItChildCommon menuAdapter = new MenuAdapterShareItChildCommon(menuEntitiesShareItChildByParent, parentNameCat, new AdapterListenner() {
                     @Override
                     public void onItemClickListenner(Object o, int pos, RecyclerView.ViewHolder holder) {
-                        ToastUtil.toast(context, "position:"+pos);
                         MenuEntityShareIt menuItem =(MenuEntityShareIt) o;
                         catIdShareit = menuItem.getId();
+                        postEntities.clear();
                         getListPostShareIt();
                         tvTitle.setText(menuItem.getName());
                         menuChildCommon.toggle();
@@ -389,9 +388,11 @@ public class MainActivity extends AppCompatActivity {
                     PostEntity postEntity =(PostEntity) o;
                     Intent intent = new Intent(MainActivity.this, Detail_Activity.class);
                     intent.putExtra("post", postEntity);
+                    intent.putExtra("isShareItPostType", isShareItPostType);
                     startActivity(intent);
                 }else{
-                    getListPost();
+                    if(isShareItPostType == true) getListPostShareIt() ;
+                    else getListPost();
                 }
             }
         });
@@ -421,7 +422,6 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             swipeRefreshLayout.setRefreshing(false);
-                            LogUtil.d("GetListPost", s);
                             JSONArray jsonArray = new JSONArray(s);
                             for(int i=0; i<jsonArray.length(); ++i){
                                 JSONObject jsonObject =(JSONObject) jsonArray.get(i);
@@ -468,12 +468,10 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             swipeRefreshLayout.setRefreshing(false);
-                            LogUtil.d("GetListPostShare", s);
                             JSONArray jsonArray = new JSONArray(s);
                             for(int i=0; i<jsonArray.length(); ++i){
                                 JSONObject jsonObject =(JSONObject) jsonArray.get(i);
                                 PostEntity postEntity = new PostEntity(jsonObject, true);
-                                LogUtil.d("nameDetail:", postEntity.getTitle().toString());
                                 postEntities.add(postEntity);
                             }
 

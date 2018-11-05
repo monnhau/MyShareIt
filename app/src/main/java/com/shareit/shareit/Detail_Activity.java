@@ -16,7 +16,9 @@ import com.shareit.api.NewsApi;
 import com.shareit.entity.PostEntity;
 import com.shareit.interfaces.HttpCallback;
 import com.shareit.util.LogUtil;
+import com.shareit.util.ToastUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,46 +62,75 @@ public class Detail_Activity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
         PostEntity postEntity =(PostEntity) bundle.getSerializable("post");
+        boolean isShareItPostType = bundle.getBoolean("isShareItPostType");
         tvDetailTitle.setText(postEntity.getTitle());
 
-        String link = postEntity.getLink();
-
-        LogUtil.d("linkDetail", link);
-
-        NewsApi.API_GET_POST_DETAIL(context, link, new HttpCallback() {
-            @Override
-            public void onSucess(final String s) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONObject jsonObject = new JSONObject(s);
-                            PostEntity postEntity1 = new PostEntity(jsonObject);
-                            String data = "<html><head><style>*{max-width:100%}</style></head><body>"+postEntity1.getContent()+"</body></html>";
-                            wvDetail.loadData(data, "text/html; charset=utf-8", "utf-8");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+        if(isShareItPostType == true){
+            int idPost = postEntity.getId();
+            NewsApi.API_GET_POST_DETAIL_SHAREIT(context, idPost , new HttpCallback() {
+                @Override
+                public void onSucess(final String s) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONObject jsonObject = new JSONObject(s);
+                                PostEntity postEntity1 = new PostEntity(jsonObject, true);
+                                String data = "<html><head><style>*{max-width:100%}</style></head><body>"+postEntity1.getContent()+"</body></html>";
+                                wvDetail.loadData(data, "text/html; charset=utf-8", "utf-8");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                });
-            }
+                    });
+                }
+                @Override
+                public void onStart() {
+                }
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Có lỗi xảy ra!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+        }else{
+            String link = postEntity.getLink();
+            NewsApi.API_GET_POST_DETAIL(context, link, new HttpCallback() {
+                @Override
+                public void onSucess(final String s) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                JSONObject jsonObject = new JSONObject(s);
+                                PostEntity postEntity1 = new PostEntity(jsonObject);
+                                String data = "<html><head><style>*{max-width:100%}</style></head><body>"+postEntity1.getContent()+"</body></html>";
+                                wvDetail.loadData(data, "text/html; charset=utf-8", "utf-8");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+                @Override
+                public void onStart() {
+                }
+                @Override
+                public void onFailure(Request request, IOException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(context, "Có lỗi xảy ra!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
+        }
 
-            @Override
-            public void onStart() {
-
-            }
-
-
-            @Override
-            public void onFailure(Request request, IOException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(context, "Có lỗi xảy ra!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
 
 
 
