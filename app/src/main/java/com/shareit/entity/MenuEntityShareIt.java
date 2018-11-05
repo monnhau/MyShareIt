@@ -2,18 +2,27 @@ package com.shareit.entity;
 
 import org.json.JSONObject;
 
-public class MenuEntity {
+public class MenuEntityShareIt {
     private int id;
     private String name;
     private boolean selected;
-    private boolean isParent;
+    private int parentId;
 
-    public MenuEntity(){}
+    public MenuEntityShareIt(){}
 
-    public MenuEntity(int catId, String name, boolean selected) {
-        this.id = catId;
-        this.name = name;
+    public MenuEntityShareIt(JSONObject jsonObject, boolean selected) {
+        this.id = jsonObject.optInt("danhmuc_id");
+        this.name = jsonObject.optString("tendanhmuc");
         this.selected = selected;
+        this.parentId = jsonObject.optInt("parent_id");
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
     }
 
     public int getId() {
@@ -42,11 +51,11 @@ public class MenuEntity {
 
     @Override
     public String toString() {
-        return "MenuEntity{" +
+        return "MenuEntityShareIt{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", selected=" + selected +
-                ", isParent=" + isParent +
+                ", parentId=" + parentId +
                 '}';
     }
 }

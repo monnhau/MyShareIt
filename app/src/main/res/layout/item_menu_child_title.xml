@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:textColor="@color/colorWhite"
+        android:id="@+id/tv_item_label_menu"
+        android:textStyle="italic|bold"
+        android:textSize="@dimen/_15sdp"
+        android:background="@color/colorAccent"
+        android:paddingLeft="@dimen/_15sdp"
+        android:gravity="center"
+        android:text="Demo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp" />
+
+</RelativeLayout>

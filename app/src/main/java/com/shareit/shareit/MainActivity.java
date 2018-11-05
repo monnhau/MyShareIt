@@ -2,13 +2,13 @@ package com.shareit.shareit;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -19,9 +19,13 @@ import android.widget.ToggleButton;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.shareit.adapter.MenuAdapter;
+import com.shareit.adapter.MenuAdapterShareIt;
+import com.shareit.adapter.MenuAdapterShareItChildCommon;
 import com.shareit.adapter.PostAdapter;
 import com.shareit.api.NewsApi;
+import com.shareit.define.Define;
 import com.shareit.entity.MenuEntity;
+import com.shareit.entity.MenuEntityShareIt;
 import com.shareit.entity.PostEntity;
 import com.shareit.interfaces.AdapterListenner;
 import com.shareit.interfaces.HttpCallback;
@@ -39,17 +43,19 @@ import java.util.List;
 import okhttp3.Request;
 
 public class MainActivity extends AppCompatActivity {
-    SlidingMenu menu;
-    SlidingMenu menuItcNews;
-    SlidingMenu menuDanTri;
-    MenuAdapter menuAdapter;
+    SlidingMenu menu, menuItcNews, menuDanTri, menuChildCommon;
+    MenuAdapterShareIt menuAdapterShareIt;
     MenuAdapter menuAdapterItcNews;
     MenuAdapter menuAdapterDanTri;
-    RecyclerView rvMenu;
-    RecyclerView rvMenuITC;
-    RecyclerView rvDanTri;
+
+    RecyclerView rvMenu, rvMenuITC, rvDanTri, rvMenuChildCommon;
+    List<MenuEntityShareIt>  menuEntities = new ArrayList<>();
+    List<MenuEntityShareIt>  menuEntitiesShareItChildAll = new ArrayList<>();
+    List<MenuEntityShareIt>  menuEntitiesShareItChildByParent = new ArrayList<>();
     List<MenuEntity> menuEntitiesItcNews = new ArrayList<>();
     static int catId = 0;
+    static int catIdShareit = 0;
+    static boolean isShareItPostType = false;
     RecyclerView rvOfPosts;
     PostAdapter postAdapter;
     List<PostEntity> postEntities = new ArrayList<>();
@@ -57,8 +63,7 @@ public class MainActivity extends AppCompatActivity {
     TextView tvTitle;
     SwipeRefreshLayout swipeRefreshLayout;
     ToggleButton toggoBtnSound;
-    RelativeLayout rlItcNews;
-    RelativeLayout rlDanTri;
+    RelativeLayout rlItcNews, rlDanTri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         rvOfPosts =(RecyclerView) findViewById(R.id.rv_of_posts);
         tvTitle =(TextView) findViewById(R.id.tv_title);
         toggoBtnSound =(ToggleButton) findViewById(R.id.toggo_btn_sound);
+        swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
         toggoBtnSound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -80,7 +86,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        imgMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                menu.toggle();
+            }
+        });
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -90,12 +101,14 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         postEntities.clear();
                         postAdapter.notifyDataSetChanged();
-                        getListPost();
+                        if(isShareItPostType == true) getListPostShareIt();
+                        else getListPost();
                     }
                 });
             }
         });
 
+        /*BEGIN Sliding Menu for ShareIT*/
         menu = new SlidingMenu(this);
         menu.setMode(SlidingMenu.LEFT);
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
@@ -105,16 +118,7 @@ public class MainActivity extends AppCompatActivity {
         menu.setFadeDegree(0.35f);
         menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         menu.setMenu(R.layout.layout_menu);
-
-        menuItcNews = new SlidingMenu(this);
-        menuItcNews.setMode(SlidingMenu.RIGHT);
-        menuItcNews.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-        menuItcNews.setShadowWidthRes(R.dimen._8sdp);
-        menuItcNews.setShadowDrawable(R.drawable.shadow);
-        menuItcNews.setBehindOffsetRes(R.dimen._60sdp);
-        menuItcNews.setFadeDegree(0.35f);
-        menuItcNews.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        menuItcNews.setMenu(R.layout.layout_menu_itcnews);
+        /*END Sliding Menu for ShareIT*/
 
         rlItcNews = (RelativeLayout) menu.findViewById(R.id.rl_itc_news);
 
@@ -124,6 +128,16 @@ public class MainActivity extends AppCompatActivity {
                 menuItcNews.toggle();
             }
         });
+        /*BEGIN Sliding Menu for ITC NEW*/
+        menuItcNews = new SlidingMenu(this);
+        menuItcNews.setMode(SlidingMenu.RIGHT);
+        menuItcNews.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);//menuItcNews.setShadowWidthRes(R.dimen._8sdp);
+        menuItcNews.setShadowDrawable(null);
+        menuItcNews.setBehindOffsetRes(R.dimen._60sdp);
+        menuItcNews.setFadeDegree(0.35f);
+        menuItcNews.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        menuItcNews.setMenu(R.layout.layout_menu_itcnews);
+        /*END Sliding Menu for ITC NEW*/
 
         rlDanTri = (RelativeLayout) menu.findViewById(R.id.rl_dan_tri);
 
@@ -134,24 +148,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /*BEGIN Sliding Menu for DANTRI*/
         menuDanTri = new SlidingMenu(this);
         menuDanTri.setMode(SlidingMenu.RIGHT);
-        menuDanTri.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-        menuDanTri.setShadowWidthRes(R.dimen._8sdp);
-        menuDanTri.setShadowDrawable(R.drawable.shadow);
+        menuDanTri.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);//menuDanTri.setShadowWidthRes(R.dimen._0sdp);
+        menuDanTri.setShadowDrawable(null);
         menuDanTri.setBehindOffsetRes(R.dimen._60sdp);
         menuDanTri.setFadeDegree(0.35f);
         menuDanTri.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         menuDanTri.setMenu(R.layout.layout_menu_dan_tri);
+        /*END Sliding Menu for DAN TRI*/
+
+        /*BEGIN Sliding Menu for ChildCommon*/
+        menuChildCommon = new SlidingMenu(this);
+        menuChildCommon.setMode(SlidingMenu.RIGHT);
+        menuChildCommon.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);/*menuChildCommon.setShadowWidthRes(R.dimen._8sdp);*/
+        menuChildCommon.setShadowDrawable(null);
+        menuChildCommon.setBehindOffsetRes(R.dimen._60sdp);
+        menuChildCommon.setFadeDegree(0.35f);
+        menuChildCommon.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        menuChildCommon.setMenu(R.layout.layout_menu_child_common);
+        /*END Sliding Menu for ChildCommon*/
 
 
-        imgMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                menu.toggle();
-            }
-        });
 
+        /*Prepare menuEntities for RSS News*/
         MenuEntity thoisu = new MenuEntity(1, "Thời sự", true);
         tvTitle.setText(thoisu.getName());
         MenuEntity internet = new MenuEntity(2, "Internet", false);
@@ -184,7 +205,71 @@ public class MainActivity extends AppCompatActivity {
         menuEntitiesItcNews.add(gocdoanhnghiep);
         menuEntitiesItcNews.add(otoxemay);
         menuEntitiesItcNews.add(videohot);
+        /*END Prepare menuEntities for RSS News*/
 
+        /*BEGIN Prepare menuEntities for ShareIT News  (Lấy các danh mục cha)*/
+        NewsApi.API_GET_LIST_PARENT_CAT_SHAREIT(context, new HttpCallback() {
+            @Override
+            public void onSucess(final String s) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONArray jsonArray = new JSONArray(s);
+                            for(int i=0; i<jsonArray.length(); i++){
+                                JSONObject jsonObject =(JSONObject) jsonArray.get(i);
+                                MenuEntityShareIt menuEntityShareIt = new MenuEntityShareIt(jsonObject, false);
+                                menuEntities.add(menuEntityShareIt);
+                            }
+                            menuAdapterShareIt.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+            }
+            @Override
+            public void onStart() {
+            }
+            @Override
+            public void onFailure(Request request, IOException e) {
+            }
+        });
+        /*END Prepare menuEntities for ShareIT News  (Lấy các danh mục cha)*/
+
+        /*BEGIN Prepare menuEntities for ShareIT News  (Lấy all các danh mục con)*/
+        NewsApi.API_GET_LIST_CHILD_CAT_SHAREIT(context, new HttpCallback() {
+            @Override
+            public void onSucess(final String s) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONArray jsonArray = new JSONArray(s);
+                            for(int i=0; i<jsonArray.length(); i++){
+                                JSONObject jsonObject =(JSONObject) jsonArray.get(i);
+                                MenuEntityShareIt menuEntityShareIt = new MenuEntityShareIt(jsonObject, false);
+                                menuEntitiesShareItChildAll.add(menuEntityShareIt);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+            }
+            @Override
+            public void onStart() {
+            }
+            @Override
+            public void onFailure(Request request, IOException e) {
+            }
+        });
+        /*END Prepare menuEntities for ShareIT News  (Lấy all các danh mục con)*/
+
+        /*BEGIN Prepare menuAdapter for Rss News*/
         menuAdapterItcNews = new MenuAdapter(menuEntitiesItcNews, new AdapterListenner() {
             @Override
             public void onItemClickListenner(Object o, int pos, RecyclerView.ViewHolder holder) {
@@ -228,12 +313,56 @@ public class MainActivity extends AppCompatActivity {
                 menuDanTri.toggle();
             }
         });
+        /*END Prepare menuAdapter for Rss News*/
 
+        /*BEGIN----- Prepare menuAdapter for ShareIT News*/
+        menuAdapterShareIt = new MenuAdapterShareIt(menuEntities, new AdapterListenner() {
+            @Override
+            public void onItemClickListenner(Object o, int pos, RecyclerView.ViewHolder holder) {
+                MenuEntityShareIt menuItemParent =(MenuEntityShareIt) o;
+                int idNhan = menuItemParent.getId();
+                String parentNameCat = menuItemParent.getName().toString();
 
+                //chuan bi danh sach Cat Child (menuEntiesChildByParent) ung voi parent_id da chon
+                menuEntitiesShareItChildByParent.clear();
+//                MenuEntityShareIt menuItemParentClone = menuItemParent;
+//                menuItemParentClone.setName("Xem tất cả");
+                menuEntitiesShareItChildByParent.add(menuItemParent);
+
+                for(int i=0; i<menuEntitiesShareItChildAll.size(); i++){
+                    MenuEntityShareIt menuItemChild =(MenuEntityShareIt) menuEntitiesShareItChildAll.get(i);
+                    int idCha =  menuItemChild.getParentId();
+                    if( idCha == idNhan ){
+                        menuEntitiesShareItChildByParent.add(menuItemChild);
+                    }
+                }
+                //new 1 MenuAdapterShareItShareItChilCommon
+                MenuAdapterShareItChildCommon menuAdapter = new MenuAdapterShareItChildCommon(menuEntitiesShareItChildByParent, parentNameCat, new AdapterListenner() {
+                    @Override
+                    public void onItemClickListenner(Object o, int pos, RecyclerView.ViewHolder holder) {
+                        ToastUtil.toast(context, "position:"+pos);
+                        MenuEntityShareIt menuItem =(MenuEntityShareIt) o;
+                        catIdShareit = menuItem.getId();
+                        getListPostShareIt();
+                        tvTitle.setText(menuItem.getName());
+                        menuChildCommon.toggle();
+                        menu.toggle();
+                    }
+                });
+                //set Adapter cho rvMenuChildCommon
+                rvMenuChildCommon.setAdapter(menuAdapter);
+                //mo sliding menu Cat_Childs ugn voi id_Cha da nhan
+                menuChildCommon.toggle();
+            }
+        }) ;
+
+        /*END----- Prepare menuAdapter for ShareIT News*/
+
+        /*BEGIN Set Adapter for all rv Menu: ShareIT, ITCnew, DanTri*/
         rvMenu =(RecyclerView) menu.findViewById(R.id.rv_Menu);
         rvMenu.setLayoutManager(new LinearLayoutManager(this));
         rvMenu.setItemAnimator(new DefaultItemAnimator());
-        //rvMenu.setAdapter(menuAdapterItcNews);
+        rvMenu.setAdapter(menuAdapterShareIt);
 
         rvMenuITC  = (RecyclerView) menuItcNews.findViewById(R.id.rv_Menu_ITC);
         rvMenuITC.setLayoutManager(new LinearLayoutManager(this));
@@ -245,7 +374,15 @@ public class MainActivity extends AppCompatActivity {
         rvDanTri.setItemAnimator(new DefaultItemAnimator());
         rvDanTri.setAdapter(menuAdapterDanTri);
 
-        postAdapter = new PostAdapter(postEntities, new AdapterListenner() {
+        rvMenuChildCommon  = (RecyclerView) menuChildCommon.findViewById(R.id.rv_menu_child_common);
+        rvMenuChildCommon.setLayoutManager(new LinearLayoutManager(this));
+        rvMenuChildCommon.setItemAnimator(new DefaultItemAnimator());
+                      //rvDanTri.setAdapter(menuAdapterDanTri);
+        /*EDN Set Adapter for all rv Menu: ShareIT, ITCnew, DanTri*/
+
+
+        /*BEGIN new() postAdapter để hiện thị trang index, set postAdapter cho RecyclView rvOfPosts*/
+        postAdapter = new PostAdapter(postEntities, isShareItPostType, new AdapterListenner() {
             @Override
             public void onItemClickListenner(Object o, int pos, RecyclerView.ViewHolder holder) {
                 if(holder instanceof PostAdapter.PostViewHolder){
@@ -262,10 +399,20 @@ public class MainActivity extends AppCompatActivity {
         rvOfPosts.setLayoutManager(new LinearLayoutManager(this));
         rvOfPosts.setItemAnimator(new DefaultItemAnimator());
         rvOfPosts.setAdapter(postAdapter);
+        /*END  new() postAdapter để hiện thị trang index, set postAdapter cho RecyclView rvOfPosts*/
+
+
+        //chay phuong thuc getListPost de lay cac bài viết đổ vô postAdpater, hiên thị ra index
         getListPost();
 
     }
     public void getListPost(){
+        //neu chuyen tu doc tin ShareIt sang tin RSS, thi clear posEnties cũ của ShareIT
+        if(isShareItPostType==true) {
+            postEntities.clear();
+            isShareItPostType=false;
+            postAdapter.setShareItPostType(false);
+        }
         NewsApi.API_GET_LIST_POST(context, catId, 3, postEntities.size(), new HttpCallback() {
             @Override
             public void onSucess(final String s) {
@@ -289,10 +436,57 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-
             @Override
             public void onStart() {
+            }
 
+            @Override
+            public void onFailure(Request request, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                        Toast.makeText(MainActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
+    public void getListPostShareIt(){
+        //neu chuyen tu doc tin RSS sang tin Shareit, thi clear posEnties cũ của RSS
+        if(isShareItPostType==false) {
+            postEntities.clear();
+            isShareItPostType=true;
+            postAdapter.setShareItPostType(true);
+        }
+        NewsApi.API_GET_LIST_POST_SHAREIT(context, catIdShareit, (postEntities.size()/ Define.paginateNum)+1, new HttpCallback() {
+            @Override
+            public void onSucess(final String s) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            swipeRefreshLayout.setRefreshing(false);
+                            LogUtil.d("GetListPostShare", s);
+                            JSONArray jsonArray = new JSONArray(s);
+                            for(int i=0; i<jsonArray.length(); ++i){
+                                JSONObject jsonObject =(JSONObject) jsonArray.get(i);
+                                PostEntity postEntity = new PostEntity(jsonObject, true);
+                                LogUtil.d("nameDetail:", postEntity.getTitle().toString());
+                                postEntities.add(postEntity);
+                            }
+
+                            postAdapter.notifyDataSetChanged();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+            @Override
+            public void onStart() {
             }
 
             @Override

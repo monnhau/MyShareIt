@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.shareit.define.Define;
 import com.shareit.entity.PostEntity;
 import com.shareit.interfaces.AdapterListenner;
 import com.shareit.shareit.R;
@@ -23,10 +24,16 @@ public class PostAdapter extends RecyclerView.Adapter{
     AdapterListenner listenner;
     public static final int TYPE_ITEM_POST=0;
     public static final int TYPE_ITEM_LOAD_MORE=1;
+    public boolean isShareItPostType;
 
-    public PostAdapter(List<PostEntity> postEntities, AdapterListenner listenner){
+    public void setShareItPostType(boolean shareItPostType) {
+        isShareItPostType = shareItPostType;
+    }
+
+    public PostAdapter(List<PostEntity> postEntities, boolean isShareItPostType, AdapterListenner listenner){
         this.postEntities = postEntities;
         this.listenner = listenner;
+        this.isShareItPostType = isShareItPostType;
     }
     @NonNull
     @Override
@@ -48,7 +55,9 @@ public class PostAdapter extends RecyclerView.Adapter{
             final PostEntity postEntity = postEntities.get(position);
             postViewHolder.tvPostTitle.setText(postEntity.getTitle());
             postViewHolder.tvPostDesc.setText(postEntity.getDesc());
-            Glide.with(postViewHolder.imgPost.getContext()).load(postEntity.getThumb()).into(postViewHolder.imgPost);
+            String thumb = postEntity.getThumb();
+            if(isShareItPostType == true) thumb = Define.API_GET_LIST_POST_SHAREIT+"/storage/app/files/"+thumb;
+            Glide.with(postViewHolder.imgPost.getContext()).load(thumb).into(postViewHolder.imgPost);
             postViewHolder.rlItemPost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
