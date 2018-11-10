@@ -214,13 +214,14 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
-                            JSONArray jsonArray = new JSONArray(s);
-                            for(int i=0; i<jsonArray.length(); i++){
-                                JSONObject jsonObject =(JSONObject) jsonArray.get(i);
-                                MenuEntityShareIt menuEntityShareIt = new MenuEntityShareIt(jsonObject, false);
-                                menuEntities.add(menuEntityShareIt);
-                            }
-                            menuAdapterShareIt.notifyDataSetChanged();
+                                JSONArray jsonArray = new JSONArray(s);
+                                for(int i=0; i<jsonArray.length(); i++){
+                                    JSONObject jsonObject =(JSONObject) jsonArray.get(i);
+                                    MenuEntityShareIt menuEntityShareIt = new MenuEntityShareIt(jsonObject, false);
+                                    menuEntities.add(menuEntityShareIt);
+                                }
+                                menuAdapterShareIt.notifyDataSetChanged();
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
