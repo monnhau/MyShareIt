@@ -3,15 +3,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TextView
-        android:textStyle="italic"
-        android:textSize="@dimen/_14sdp"
+        android:textStyle="italic|bold"
+        android:textSize="@dimen/_15sdp"
         android:gravity="center"
         android:textColor="@color/colorWhite"
         android:background="@color/colorAccent"
-        android:padding="@dimen/_8sdp"
         android:text="Nguồn tin trang Dân Trí"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="@dimen/_40sdp" />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_Dan_Tri"
         android:layout_width="match_parent"

@@ -6,4 +6,5 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlackTran">#73000000</color>
     <color name="colorPink">#FCE6DF</color>
+    <color name="colorDo">#db0f0f</color>
 </resources>

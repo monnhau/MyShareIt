@@ -55,6 +55,27 @@ public class NewsApi {
         //Dua tren nhan vat chinh, ta dung no goi new Call, with Request
         okHttpClient.newCall(request).enqueue(baseOkHttp);
     }
+    public static void API_GET_LIST_POST_FLASH(Context ctx,int catId, int limit, int offset, HttpCallback httpCallback){
+        //Tao 1 callback dua tren doi tuong Baseokhttp
+        BaseOkHttp baseOkHttp = new BaseOkHttp.Builder()
+                .setHttpCallback(httpCallback)
+                .setContext(ctx)
+                .setWantShowDialog(false)
+                .setWantDialogCancelable(false)
+                .setMessage("Loading...")
+                .setTitle("Loading...")
+                .build();
+
+        //Tao nhan vat chnh cua chung ta HttpClient
+        OkHttpClient okHttpClient = BaseOkHttp.getOkHttpClient();
+        String url = Define.API_GET_LIST_POST+"?cat_id="+catId+"&limit="+limit+"&offset="+offset;
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        //Dua tren nhan vat chinh, ta dung no goi new Call, with Request
+        okHttpClient.newCall(request).enqueue(baseOkHttp);
+    }
 
     public static void API_GET_POST_DETAIL(Context ctx, String link, HttpCallback httpCallback ){
         //Tao 1 call back dua vao doi tuong baseOkhttp
@@ -102,6 +123,29 @@ public class NewsApi {
           okHttpClient.newCall(request).enqueue(baseOkHttp);
       }
 
+    public static void API_GET_LIST_PARENT_CAT_SHAREIT_FLASH(Context ctx, HttpCallback httpCallback){
+        //tao 1 Calnback nho vao BaseOkhttp
+        BaseOkHttp baseOkHttp = new BaseOkHttp.Builder()
+                .setHttpCallback(httpCallback)
+                .setContext(ctx)
+                .setWantDialogCancelable(false)
+                .setWantShowDialog(false)
+                .setMessage("Loading...")
+                .setTitle("Loading...")
+                .build();
+
+        //Tao nhan vat chinh cua chung ta, la HttpClient
+        OkHttpClient okHttpClient = BaseOkHttp.getOkHttpClient();
+        String url = Define.API_GET_LIST_PARENT_CAT_SHAREIT;
+        LogUtil.d("urlGetListcat", url);
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        //dung OKHttpClient Tao new Call, with Request reques
+        okHttpClient.newCall(request).enqueue(baseOkHttp);
+    }
+
     public static void API_GET_LIST_CHILD_CAT_SHAREIT(Context ctx, HttpCallback httpCallback){
         //tao 1 Calnback nho vao BaseOkhttp
         BaseOkHttp baseOkHttp = new BaseOkHttp.Builder()
@@ -109,6 +153,29 @@ public class NewsApi {
                 .setContext(ctx)
                 .setWantDialogCancelable(true)
                 .setWantShowDialog(true)
+                .setMessage("Loading...")
+                .setTitle("Loading...")
+                .build();
+
+        //Tao nhan vat chinh cua chung ta, la HttpClient
+        OkHttpClient okHttpClient = BaseOkHttp.getOkHttpClient();
+        String url = Define.API_GET_LIST_CHILD_CAT_SHAREIT;
+        LogUtil.d("urlGetListcat", url);
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        //dung OKHttpClient Tao new Call, with Request reques
+        okHttpClient.newCall(request).enqueue(baseOkHttp);
+    }
+
+    public static void API_GET_LIST_CHILD_CAT_SHAREIT_FLASH(Context ctx, HttpCallback httpCallback){
+        //tao 1 Calnback nho vao BaseOkhttp
+        BaseOkHttp baseOkHttp = new BaseOkHttp.Builder()
+                .setHttpCallback(httpCallback)
+                .setContext(ctx)
+                .setWantDialogCancelable(false)
+                .setWantShowDialog(false)
                 .setMessage("Loading...")
                 .setTitle("Loading...")
                 .build();

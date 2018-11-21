@@ -10,4 +10,5 @@ public class Define {
     public static String API_GET_LIST_POST_SHAREIT = "http://docbao.96.lt";
 
     public static int paginateNum = 20;
+    public static int paginateNumRss = 3;
 }

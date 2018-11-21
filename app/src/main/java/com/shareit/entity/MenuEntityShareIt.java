@@ -2,7 +2,9 @@ package com.shareit.entity;
 
 import org.json.JSONObject;
 
-public class MenuEntityShareIt {
+import java.io.Serializable;
+
+public class MenuEntityShareIt implements Serializable{
     private int id;
     private String name;
     private boolean selected;

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorDo"
+    tools:context=".FlashActivity">
+    <ImageView
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_120sdp"
+        android:src="@drawable/logo"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="@dimen/_150sdp" />
+    <TextView
+        android:id="@+id/tv_phien_ban"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/_280sdp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/tv_phien_ban"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:visibility="invisible"
+        android:id="@+id/tv_loi_internet"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/ll_loading"
+        android:textColor="@color/colorWhite"
+        android:text="@string/tv_loi_internet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/ll_loading"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ProgressBar
+            android:visibility="visible"
+            android:id="@+id/pg_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_30sdp" />
+        <TextView
+            android:visibility="visible"
+            android:id="@+id/tv_loading"
+            android:textColor="@color/colorWhite"
+            android:gravity="center"
+            android:text="@string/tv_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_30sdp" />
+    </LinearLayout>
+
+</RelativeLayout>

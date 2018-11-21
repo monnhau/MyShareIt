@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
         menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
         menu.setShadowWidthRes(R.dimen._8sdp);
         menu.setShadowDrawable(R.drawable.shadow);
-        menu.setBehindOffsetRes(R.dimen._60sdp);
+        menu.setBehindOffsetRes(R.dimen._100sdp);
         menu.setFadeDegree(0.35f);
         menu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         menu.setMenu(R.layout.layout_menu);
@@ -127,17 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 menuItcNews.toggle();
             }
         });
-        /*BEGIN Sliding Menu for ITC NEW*/
-        menuItcNews = new SlidingMenu(this);
-        menuItcNews.setMode(SlidingMenu.RIGHT);
-        menuItcNews.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);//menuItcNews.setShadowWidthRes(R.dimen._8sdp);
-        menuItcNews.setShadowDrawable(null);
-        menuItcNews.setBehindOffsetRes(R.dimen._60sdp);
-        menuItcNews.setFadeDegree(0.35f);
-        menuItcNews.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        menuItcNews.setMenu(R.layout.layout_menu_itcnews);
-        /*END Sliding Menu for ITC NEW*/
-
         rlDanTri = (RelativeLayout) menu.findViewById(R.id.rl_dan_tri);
 
         rlDanTri.setOnClickListener(new View.OnClickListener() {
@@ -147,12 +136,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /*BEGIN Sliding Menu for ITC NEW*/
+        menuItcNews = new SlidingMenu(this);
+        menuItcNews.setMode(SlidingMenu.RIGHT);
+        menuItcNews.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);//menuItcNews.setShadowWidthRes(R.dimen._8sdp);
+        menuItcNews.setShadowDrawable(null);
+        menuItcNews.setBehindOffsetRes(R.dimen._100sdp);
+        menuItcNews.setFadeDegree(0.35f);
+        menuItcNews.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        menuItcNews.setMenu(R.layout.layout_menu_itcnews);
+        /*END Sliding Menu for ITC NEW*/
+
         /*BEGIN Sliding Menu for DANTRI*/
         menuDanTri = new SlidingMenu(this);
         menuDanTri.setMode(SlidingMenu.RIGHT);
         menuDanTri.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);//menuDanTri.setShadowWidthRes(R.dimen._0sdp);
         menuDanTri.setShadowDrawable(null);
-        menuDanTri.setBehindOffsetRes(R.dimen._60sdp);
+        menuDanTri.setBehindOffsetRes(R.dimen._100sdp);
         menuDanTri.setFadeDegree(0.35f);
         menuDanTri.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         menuDanTri.setMenu(R.layout.layout_menu_dan_tri);
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         menuChildCommon.setMode(SlidingMenu.RIGHT);
         menuChildCommon.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);/*menuChildCommon.setShadowWidthRes(R.dimen._8sdp);*/
         menuChildCommon.setShadowDrawable(null);
-        menuChildCommon.setBehindOffsetRes(R.dimen._60sdp);
+        menuChildCommon.setBehindOffsetRes(R.dimen._100sdp);
         menuChildCommon.setFadeDegree(0.35f);
         menuChildCommon.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         menuChildCommon.setMenu(R.layout.layout_menu_child_common);
@@ -172,102 +172,23 @@ public class MainActivity extends AppCompatActivity {
 
 
         /*Prepare menuEntities for RSS News*/
-        MenuEntity thoisu = new MenuEntity(1, "Thời sự", true);
-        tvTitle.setText(thoisu.getName());
-        MenuEntity internet = new MenuEntity(2, "Internet", false);
-        MenuEntity phanmem = new MenuEntity(3, "Phần mềm", false);
-        MenuEntity kinhdoanh = new MenuEntity(4, "Kinh doanh", false);
-        MenuEntity thitruong = new MenuEntity(5, "Thị trường", false);
-        MenuEntity game = new MenuEntity(6, "Game", false);
-        MenuEntity congnghe360 = new MenuEntity(7, "Công nghệ 360", false);
-        MenuEntity cntt = new MenuEntity(8, "CNTT", false);
-        MenuEntity phancung = new MenuEntity(9, "Phần cứng", false);
-        MenuEntity thegioiso = new MenuEntity(10, "Thế giói số", false);
-        MenuEntity didong = new MenuEntity(11, "Di động", false);
-        MenuEntity khoinghiep = new MenuEntity(12, "Khởi nghiệp", false);
-        MenuEntity gocdoanhnghiep = new MenuEntity(13, "Góc doanh nghiệp", false);
-        MenuEntity otoxemay = new MenuEntity(14, "Ô tô-Xe máy", false);
-        MenuEntity videohot = new MenuEntity(15, "Video hot", false);
-
-        menuEntitiesItcNews.add(thoisu);
-        menuEntitiesItcNews.add(internet);
-        menuEntitiesItcNews.add(phanmem);
-        menuEntitiesItcNews.add(kinhdoanh);
-        menuEntitiesItcNews.add(thitruong);
-        menuEntitiesItcNews.add(game);
-        menuEntitiesItcNews.add(congnghe360);
-        menuEntitiesItcNews.add(cntt);
-        menuEntitiesItcNews.add(phancung);
-        menuEntitiesItcNews.add(thegioiso);
-        menuEntitiesItcNews.add(didong);
-        menuEntitiesItcNews.add(khoinghiep);
-        menuEntitiesItcNews.add(gocdoanhnghiep);
-        menuEntitiesItcNews.add(otoxemay);
-        menuEntitiesItcNews.add(videohot);
+        Intent intent = getIntent();
+        menuEntitiesItcNews = (List<MenuEntity>) intent.getSerializableExtra("menuEntitiesItcNews");
+        tvTitle.setText(menuEntitiesItcNews.get(0).getName().toString());
         /*END Prepare menuEntities for RSS News*/
 
         /*BEGIN Prepare menuEntities for ShareIT News  (Lấy các danh mục cha)*/
-        NewsApi.API_GET_LIST_PARENT_CAT_SHAREIT(context, new HttpCallback() {
-            @Override
-            public void onSucess(final String s) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                                JSONArray jsonArray = new JSONArray(s);
-                                for(int i=0; i<jsonArray.length(); i++){
-                                    JSONObject jsonObject =(JSONObject) jsonArray.get(i);
-                                    MenuEntityShareIt menuEntityShareIt = new MenuEntityShareIt(jsonObject, false);
-                                    menuEntities.add(menuEntityShareIt);
-                                }
-                                menuAdapterShareIt.notifyDataSetChanged();
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-            }
-            @Override
-            public void onStart() {
-            }
-            @Override
-            public void onFailure(Request request, IOException e) {
-            }
-        });
+        menuEntities = (List<MenuEntityShareIt>) intent.getSerializableExtra("parentCats");
         /*END Prepare menuEntities for ShareIT News  (Lấy các danh mục cha)*/
 
         /*BEGIN Prepare menuEntities for ShareIT News  (Lấy all các danh mục con)*/
-        NewsApi.API_GET_LIST_CHILD_CAT_SHAREIT(context, new HttpCallback() {
-            @Override
-            public void onSucess(final String s) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            JSONArray jsonArray = new JSONArray(s);
-                            for(int i=0; i<jsonArray.length(); i++){
-                                JSONObject jsonObject =(JSONObject) jsonArray.get(i);
-                                MenuEntityShareIt menuEntityShareIt = new MenuEntityShareIt(jsonObject, false);
-                                menuEntitiesShareItChildAll.add(menuEntityShareIt);
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-            }
-            @Override
-            public void onStart() {
-            }
-            @Override
-            public void onFailure(Request request, IOException e) {
-            }
-        });
+        menuEntitiesShareItChildAll = (List<MenuEntityShareIt>) intent.getSerializableExtra("childCats");
         /*END Prepare menuEntities for ShareIT News  (Lấy all các danh mục con)*/
+
+        /*BEGIN Prepare postEntities for RSS id 1 */
+        postEntities = (List<PostEntity>) intent.getSerializableExtra("posts");
+        /*END Prepare postEntities for RSS id 1 */
 
         /*BEGIN Prepare menuAdapter for Rss News*/
         menuAdapterItcNews = new MenuAdapter(menuEntitiesItcNews, new AdapterListenner() {
@@ -325,8 +246,6 @@ public class MainActivity extends AppCompatActivity {
 
                 //chuan bi danh sach Cat Child (menuEntiesChildByParent) ung voi parent_id da chon
                 menuEntitiesShareItChildByParent.clear();
-//                MenuEntityShareIt menuItemParentClone = menuItemParent;
-//                menuItemParentClone.setName("Xem tất cả");
                 menuEntitiesShareItChildByParent.add(menuItemParent);
 
                 for(int i=0; i<menuEntitiesShareItChildAll.size(); i++){
@@ -358,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*END----- Prepare menuAdapter for ShareIT News*/
 
+
         /*BEGIN Set Adapter for all rv Menu: ShareIT, ITCnew, DanTri*/
         rvMenu =(RecyclerView) menu.findViewById(R.id.rv_Menu);
         rvMenu.setLayoutManager(new LinearLayoutManager(this));
@@ -379,6 +299,9 @@ public class MainActivity extends AppCompatActivity {
         rvMenuChildCommon.setItemAnimator(new DefaultItemAnimator());
                       //rvDanTri.setAdapter(menuAdapterDanTri);
         /*EDN Set Adapter for all rv Menu: ShareIT, ITCnew, DanTri*/
+
+
+
 
 
         /*BEGIN new() postAdapter để hiện thị trang index, set postAdapter cho RecyclView rvOfPosts*/
@@ -403,11 +326,9 @@ public class MainActivity extends AppCompatActivity {
         rvOfPosts.setAdapter(postAdapter);
         /*END  new() postAdapter để hiện thị trang index, set postAdapter cho RecyclView rvOfPosts*/
 
-
-        //chay phuong thuc getListPost de lay cac bài viết đổ vô postAdpater, hiên thị ra index
-        getListPost();
-
     }
+
+
     public void getListPost(){
         //neu chuyen tu doc tin ShareIt sang tin RSS, thi clear posEnties cũ của ShareIT
         if(isShareItPostType==true) {
