@@ -2,6 +2,7 @@ package com.shareit.shareit;
 
 import android.content.Context;
 import android.content.Intent;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.Request;
 
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeRefreshLayout;
     ToggleButton toggoBtnSound;
     RelativeLayout rlItcNews, rlDanTri;
+    private TextToSpeech mTTs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -318,6 +321,33 @@ public class MainActivity extends AppCompatActivity {
                     if(isShareItPostType == true) getListPostShareIt() ;
                     else getListPost();
                 }
+            }
+        });
+
+        mTTs = new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+//                    int result = mTTs.setLanguage(Locale.ENGLISH);
+                    int result = mTTs.setLanguage(new Locale("vi_VN"));
+
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        Log.e("TTS", "Language not supported");
+                    }
+                } else {
+                    Log.e("TTS", "Initialization failed");
+                }
+            }
+        });
+
+        postAdapter.setOnItemClickToTitle(new PostAdapter.IOnItemClickToTitle() {
+            @Override
+            public void IOnItem(int position, View view) {
+                final PostEntity postEntity = postEntities.get(position);
+//                textSpeech.speak(postEntity.getTitle());
+
+                mTTs.speak(postEntity.getTitle(), TextToSpeech.QUEUE_FLUSH, null);
+
             }
         });
 
