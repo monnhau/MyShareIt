@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,7 +26,7 @@ public class PostAdapter extends RecyclerView.Adapter{
     public static final int TYPE_ITEM_POST=0;
     public static final int TYPE_ITEM_LOAD_MORE=1;
     public boolean isShareItPostType;
-
+    IOnItemClickToTitle onItemClickToTitle;
     public void setShareItPostType(boolean shareItPostType) {
         isShareItPostType = shareItPostType;
     }
@@ -35,6 +36,11 @@ public class PostAdapter extends RecyclerView.Adapter{
         this.listenner = listenner;
         this.isShareItPostType = isShareItPostType;
     }
+
+    public void setOnItemClickToTitle(IOnItemClickToTitle onItemClickToTitle) {
+        this.onItemClickToTitle = onItemClickToTitle;
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -58,6 +64,14 @@ public class PostAdapter extends RecyclerView.Adapter{
             String thumb = postEntity.getThumb();
             if(isShareItPostType == true) thumb = Define.API_GET_LIST_POST_SHAREIT+"/storage/app/files/"+thumb;
             Glide.with(postViewHolder.imgPost.getContext()).load(thumb).into(postViewHolder.imgPost);
+
+            postViewHolder.lineTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickToTitle.IOnItem(position,view);
+                }
+            });
+
             postViewHolder.rlItemPost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -98,12 +112,20 @@ public class PostAdapter extends RecyclerView.Adapter{
         TextView tvPostTitle;
         TextView tvPostDesc;
         RelativeLayout rlItemPost;
+        LinearLayout lineTitle;
         public PostViewHolder(View itemView) {
             super(itemView);
             imgPost =(ImageView) itemView.findViewById(R.id.img_post);
             tvPostTitle =(TextView) itemView.findViewById(R.id.tv_post_title);
             tvPostDesc =(TextView) itemView.findViewById(R.id.tv_post_desc);
             rlItemPost =(RelativeLayout) itemView.findViewById(R.id.rl_item_post);
+            lineTitle =(LinearLayout) itemView.findViewById(R.id.lineTitle);
+            lineTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickToTitle.IOnItem(getAdapterPosition(),view);
+                }
+            });
         }
     }
 
@@ -113,5 +135,9 @@ public class PostAdapter extends RecyclerView.Adapter{
             super(itemView);
             btnLoadMore = itemView.findViewById(R.id.btn_load_more);
         }
+    }
+
+    public interface IOnItemClickToTitle{
+        void IOnItem(int position,View view);
     }
 }

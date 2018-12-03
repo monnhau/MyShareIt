@@ -13,6 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <LinearLayout
+            android:id="@+id/lineTitle"
             android:background="@color/colorBlackTran"
             android:padding="@dimen/_8sdp"
             android:layout_alignParentBottom="true"
@@ -40,7 +41,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
-
     </RelativeLayout>
 
 </LinearLayout>
