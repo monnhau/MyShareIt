@@ -1,7 +1,10 @@
 package com.shareit.shareit;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -63,9 +67,11 @@ public class MainActivity extends AppCompatActivity {
     Context context = this;
     TextView tvTitle;
     SwipeRefreshLayout swipeRefreshLayout;
-    ToggleButton toggoBtnSound;
+    Button mBtnSound;
     RelativeLayout rlItcNews, rlDanTri;
     private TextToSpeech mTTs;
+    private boolean isSound = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,17 +80,36 @@ public class MainActivity extends AppCompatActivity {
         ImageView imgMenu =(ImageView) findViewById(R.id.img_menu);
         rvOfPosts =(RecyclerView) findViewById(R.id.rv_of_posts);
         tvTitle =(TextView) findViewById(R.id.tv_title);
-        toggoBtnSound =(ToggleButton) findViewById(R.id.toggo_btn_sound);
+        mBtnSound = findViewById(R.id.btn_sound);
         swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        UnMuteAudio();
 
-        toggoBtnSound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//        toggoBtnSound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                isSound = isChecked;
+//                mTTs.stop();
+//                if(isSound){
+//                    UnMuteAudio();
+//                }else{
+//                    MuteAudio();
+//                }
+//            }
+//        });
+
+        mBtnSound.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    //Bật nút Âm thanh ==> thì làm gì đó
+            public void onClick(View view) {
+                if(isSound){
+                    MuteAudio();
+                    isSound = false;
+                    mBtnSound.setText("Bật tiếng");
                 }else{
-                    //Tắt nút Âm thanh == > thì làm gì đó
+                    UnMuteAudio();
+                    isSound = true;
+                    mBtnSound.setText("Tắt tiếng");
                 }
+                mTTs.stop();
             }
         });
 
@@ -316,7 +341,9 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(MainActivity.this, Detail_Activity.class);
                     intent.putExtra("post", postEntity);
                     intent.putExtra("isShareItPostType", isShareItPostType);
-                    startActivity(intent);
+                    intent.putExtra("isSound", isSound);
+                    startActivityForResult(intent,1000);
+                    mTTs.stop();
                 }else{
                     if(isShareItPostType == true) getListPostShareIt() ;
                     else getListPost();
@@ -328,7 +355,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onInit(int status) {
                 if (status == TextToSpeech.SUCCESS) {
-//                    int result = mTTs.setLanguage(Locale.ENGLISH);
                     int result = mTTs.setLanguage(new Locale("vi_VN"));
 
                     if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
@@ -344,9 +370,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void IOnItem(int position, View view) {
                 final PostEntity postEntity = postEntities.get(position);
-//                textSpeech.speak(postEntity.getTitle());
-
-                mTTs.speak(postEntity.getTitle(), TextToSpeech.QUEUE_FLUSH, null);
+                if(isSound){
+                    mTTs.speak(postEntity.getTitle(), TextToSpeech.QUEUE_FLUSH, null);
+                }else{
+                    Toast.makeText(context, "Vui lòng bật tiếng", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -356,6 +384,23 @@ public class MainActivity extends AppCompatActivity {
         rvOfPosts.setAdapter(postAdapter);
         /*END  new() postAdapter để hiện thị trang index, set postAdapter cho RecyclView rvOfPosts*/
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1000) {
+            if(resultCode == Activity.RESULT_OK){
+                isSound = data.getBooleanExtra("isSound",false);
+                if(isSound){
+                    UnMuteAudio();
+                    mBtnSound.setText("Tắt tiếng");
+                    mTTs.speak("Tắt tiếng Tắt tiếng Tắt tiếng Tắt tiếng", TextToSpeech.QUEUE_FLUSH, null);
+                }else{
+                    MuteAudio();
+                    mBtnSound.setText("Bật tiếng");
+                }
+            }
+        }
     }
 
 
@@ -452,5 +497,38 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void MuteAudio(){
+        AudioManager mAlramMAnager = (AudioManager) getSystemService(this.AUDIO_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_MUTE, 0);
+            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_ALARM, AudioManager.ADJUST_MUTE, 0);
+            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_MUTE, 0);
+            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_MUTE, 0);
+            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_SYSTEM, AudioManager.ADJUST_MUTE, 0);
+        } else {
+            mAlramMAnager.setStreamMute(AudioManager.STREAM_NOTIFICATION, true);
+            mAlramMAnager.setStreamMute(AudioManager.STREAM_ALARM, true);
+            mAlramMAnager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+            mAlramMAnager.setStreamMute(AudioManager.STREAM_RING, true);
+            mAlramMAnager.setStreamMute(AudioManager.STREAM_SYSTEM, true);
+        }
+    }
+
+    public void UnMuteAudio(){
+        AudioManager mAlramMAnager = (AudioManager) getSystemService(this.AUDIO_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_UNMUTE, 0);
+            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_ALARM, AudioManager.ADJUST_UNMUTE, 0);
+            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_UNMUTE,0);
+            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_UNMUTE, 0);
+            mAlramMAnager.adjustStreamVolume(AudioManager.STREAM_SYSTEM, AudioManager.ADJUST_UNMUTE, 0);
+        } else {
+            mAlramMAnager.setStreamMute(AudioManager.STREAM_NOTIFICATION, false);
+            mAlramMAnager.setStreamMute(AudioManager.STREAM_ALARM, false);
+            mAlramMAnager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+            mAlramMAnager.setStreamMute(AudioManager.STREAM_RING, false);
+            mAlramMAnager.setStreamMute(AudioManager.STREAM_SYSTEM, false);
+        }
+    }
 
 }

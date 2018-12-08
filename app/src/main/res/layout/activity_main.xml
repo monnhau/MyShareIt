@@ -30,15 +30,16 @@
                 android:src="@drawable/baseline_menu_white_24"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-            <ToggleButton
-                android:id="@+id/toggo_btn_sound"
+            <Button
+                android:id="@+id/btn_sound"
                 android:textSize="@dimen/_10sdp"
                 android:background="@color/colorPink"
                 android:layout_marginRight="@dimen/_3sdp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:textOn="Sound On"
-                android:textOff="Sound off"
+                android:checked="true"
+                android:textAllCaps="false"
+                android:text="Tắt tiếng"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_26sdp" />
 

@@ -36,20 +36,27 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/_8sdp"
                 android:src="@drawable/baseline_arrow_back_white_24" />
-            <ToggleButton
-                android:id="@+id/toggo_btn_sound1"
+            <Button
+                android:id="@+id/btn_sound"
                 android:textSize="@dimen/_10sdp"
                 android:background="@color/colorPink"
                 android:layout_marginRight="@dimen/_3sdp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:textOn="Sound On"
-                android:textOff="Sound off"
+                android:textAllCaps="false"
+                android:text="Tắt tiếng"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/_26sdp" />
 
         </RelativeLayout>
 
+
+        <ImageView
+            android:padding="10dp"
+            android:id="@+id/imv_speaker"
+            android:src="@drawable/ic_volume_off"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
         <WebView
             android:id="@+id/wv_post"
             android:layout_width="match_parent"

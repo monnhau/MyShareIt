@@ -11,6 +11,7 @@ public class PostEntity implements Serializable {
     private String thumb;
     private String content;
     private String link;
+    private String text;
 
     public PostEntity(){}
 
@@ -22,16 +23,22 @@ public class PostEntity implements Serializable {
         this.content = jsonObject.optString("detail");
         this.link = jsonObject.optString("link");
     }
+
     public PostEntity(JSONObject jsonObject, boolean isShareit) {
         this.id = jsonObject.optInt("tintuc_id");
         this.title = jsonObject.optString("tentintuc");
         this.desc = jsonObject.optString("gioithieu");
         this.thumb = jsonObject.optString("hinhanh");
         this.content = jsonObject.optString("chitiet");
+        this.text = jsonObject.optString("text");
     }
 
     public String getLink() {
         return link;
+    }
+
+    public String getText() {
+        return text;
     }
 
     public void setLink(String link) {
