@@ -8,6 +8,7 @@ import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -30,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
 
 import okhttp3.Request;
@@ -190,9 +192,14 @@ public class Detail_Activity extends AppCompatActivity {
                 if (isSound) {
                     if (isSpeaker) {
                         isSpeaker = false;
-                        mTTs.speak(postEntity.getText(), TextToSpeech.QUEUE_FLUSH, null);
-                        Toast.makeText(Detail_Activity.this, postEntity.getText(), Toast.LENGTH_SHORT).show();
                         mImvSpeaker.setImageResource(R.drawable.ic_volume_up);
+
+                        if (TextUtils.isEmpty(postEntity.getText())) {
+                            Toast.makeText(context, "Không có dữ liệu đọc", Toast.LENGTH_SHORT).show();;
+                        } else {
+                            speech(postEntity.getText());
+                        }
+//                        mTTs.speak(postEntity.getText(), TextToSpeech.QUEUE_FLUSH, null);
                     } else {
                         mTTs.stop();
                         mImvSpeaker.setImageResource(R.drawable.ic_volume_off);
@@ -204,6 +211,40 @@ public class Detail_Activity extends AppCompatActivity {
 
             }
         });
+
+    }
+    private void speech(String charSequence) {
+
+        int position = 0;
+
+        int sizeOfChar= charSequence.length();
+        String testStri= charSequence.substring(position,sizeOfChar);
+
+        int next = 1000;
+        int pos = 0;
+        while(true) {
+            String temp="";
+            Log.e("in loop", "" + pos);
+
+            try {
+
+                temp = testStri.substring(pos, next);
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, temp);
+                mTTs.speak(temp, TextToSpeech.QUEUE_ADD, params);
+
+                pos = pos + 1000;
+                next = next + 1000;
+
+            } catch (Exception e) {
+                temp = testStri.substring(pos, testStri.length());
+                mTTs.speak(temp, TextToSpeech.QUEUE_ADD, null);
+                break;
+
+            }
+
+        }
+
     }
 
     @Override

@@ -394,7 +394,6 @@ public class MainActivity extends AppCompatActivity {
                 if(isSound){
                     UnMuteAudio();
                     mBtnSound.setText("Tắt tiếng");
-                    mTTs.speak("Tắt tiếng Tắt tiếng Tắt tiếng Tắt tiếng", TextToSpeech.QUEUE_FLUSH, null);
                 }else{
                     MuteAudio();
                     mBtnSound.setText("Bật tiếng");
