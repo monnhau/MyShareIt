@@ -62,10 +62,10 @@ public class Detail_Activity extends AppCompatActivity {
         mBtnSound = findViewById(R.id.btn_sound);
 
         if (isSound) {//bat
-            UnMuteAudio();
+//            UnMuteAudio();
             mBtnSound.setText("Tắt tiếng");
         } else {
-            MuteAudio();
+//            MuteAudio();
             mBtnSound.setText("Bật tiếng");
         }
         imgBack = (ImageView) findViewById(R.id.img_back);
@@ -89,13 +89,13 @@ public class Detail_Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (isSound) {
-                    MuteAudio();
+//                    MuteAudio();
                     isSound = false;
                     mBtnSound.setText("Bật tiếng");
                     isSpeaker = true;
                     mImvSpeaker.setImageResource(R.drawable.ic_volume_off);
                 } else {
-                    UnMuteAudio();
+//                    UnMuteAudio();
                     isSound = true;
                     mBtnSound.setText("Tắt tiếng");
                 }

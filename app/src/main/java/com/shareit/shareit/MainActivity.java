@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         tvTitle =(TextView) findViewById(R.id.tv_title);
         mBtnSound = findViewById(R.id.btn_sound);
         swipeRefreshLayout =(SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        UnMuteAudio();
+//        UnMuteAudio();
 
 //        toggoBtnSound.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 //            @Override
@@ -101,11 +101,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isSound){
-                    MuteAudio();
+//                    MuteAudio();
                     isSound = false;
                     mBtnSound.setText("Bật tiếng");
                 }else{
-                    UnMuteAudio();
+//                    UnMuteAudio();
                     isSound = true;
                     mBtnSound.setText("Tắt tiếng");
                 }
@@ -392,10 +392,10 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode == Activity.RESULT_OK){
                 isSound = data.getBooleanExtra("isSound",false);
                 if(isSound){
-                    UnMuteAudio();
+//                    UnMuteAudio();
                     mBtnSound.setText("Tắt tiếng");
                 }else{
-                    MuteAudio();
+//                    MuteAudio();
                     mBtnSound.setText("Bật tiếng");
                 }
             }
